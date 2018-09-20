@@ -22,9 +22,10 @@ for more information on LoopBE see http://www.nerds.de/en/loopbe30.html )
 
 Other windows midi loopback driver software also exists.
 
-Additional links: http://www.copperlan.org/index.php/download
-                  https://www.tobias-erichsen.de/software/loopmidi.html
-                  http://www.midiox.com/myoke.htm
+Additional links:
+    http://www.copperlan.org/index.php/download
+    https://www.tobias-erichsen.de/software/loopmidi.html
+    http://www.midiox.com/myoke.htm
 
 Then, the MIDI application (let's say cakewalk) will be configured to use
 the MIDI loopback device, which will then cause 'EthernetMIDI' to send UDP
