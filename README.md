@@ -20,6 +20,12 @@ To make this work, you have to be able to run the 'EthernetMIDI' application
 on the windows computer, using a 'midi loopback' device (similar to LoopBE;
 for more information on LoopBE see http://www.nerds.de/en/loopbe30.html )
 
+Other windows midi loopback driver software also exists.
+
+Additional links: http://www.copperlan.org/index.php/download
+                  https://www.tobias-erichsen.de/software/loopmidi.html
+                  http://www.midiox.com/myoke.htm
+
 Then, the MIDI application (let's say cakewalk) will be configured to use
 the MIDI loopback device, which will then cause 'EthernetMIDI' to send UDP
 packets to a Linux or FreeBSD machine running this program.  Then, the
