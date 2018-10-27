@@ -310,15 +310,15 @@ char *pTemp2;
   {
     pSA4->sin_port = htons(sPort);
   }
-
-    {
-      char tbuf[256];
-
-      fprintf(stderr, "TEMPORARY:  inet_ntop() returns \"%s\"\n",
-              inet_ntop(pSA6 ? AF_INET6 : AF_INET,
-                        (struct in_addr *)(pSA6 ? (void *)&(pSA6->sin6_addr) : (void *)&(pSA4->sin_addr)),
-                        tbuf, sizeof(tbuf)));
-    }
+//    if(pSA6 || pSA4)
+//    {
+//      char tbuf[256];
+//
+//      fprintf(stderr, "TEMPORARY:  inet_ntop() returns \"%s\"\n",
+//              inet_ntop(pSA6 ? AF_INET6 : AF_INET,
+//                        (struct in_addr *)(pSA6 ? (void *)&(pSA6->sin6_addr) : (void *)&(pSA4->sin_addr)),
+//                        tbuf, sizeof(tbuf)));
+//    }
 
   iRval = socket((pSA6 ? PF_INET6 : PF_INET), SOCK_DGRAM, IPPROTO_UDP);
 
