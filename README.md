@@ -86,3 +86,14 @@ the following:
 </pre>
 
 
+LEGACY CODE
+===========
+
+The source file 'ethermidi.c' contains a lot of legacy code for other things
+that I tried, from using a 'cuse4bsd' (userland) device for a MIDI port, to
+invoking the 'fluidsynth' application via a FIFO.  Neither one of those worked
+very well.  But I left the code within '#ifdef' blocks.  At some point I might
+remove it, or not.  But it's there as a reference if anyone wants to play with
+it, maybe implement something else.  BSD license and/or GPL applies of course,
+as appropriate (your choice which one).
+
