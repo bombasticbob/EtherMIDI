@@ -34,3 +34,49 @@ packets to a Linux or FreeBSD machine running this program.  Then, the
 
 
 
+COMPILING
+=========
+
+There are no binaries available.  You will need to build it from source.
+
+On a Linux system, you'll need all developer libraries and headers associated
+with 'libfluidsynth'.  Typically, you can do something like this:
+
+  apt-get install libfluidsynth-dev
+
+On a FreeBSD system, you should install the 'fluidsynth' package, which will
+install developer files in addition to the fluidsynth application.
+
+Once dependency packages have been installed, you should be able to build it
+using the 'make' command.  The Makefile should be compatible between gnu make
+and 'BSD' make.
+
+
+RUNNING
+=======
+
+To run the application, enter a command line similar to the following:
+
+  ethermidi -F wavetable.sf2
+
+where 'wavetable.sf2' is the (required) sound font file.
+
+The '-d' option will 'daemonize' the application (stderr remains attached for
+any error messages).
+
+The default output device is 'oss' for FreeBSD, or 'pulseaudio' for Linux.
+
+To choose a different output device, use the '-o' option.
+
+For general help, use the '-h' option.  It will print a display similar to
+the following:
+
+  Usage:  ethermidi [-d][-Fwavetable.sf2][-o output] [[ip][:port]]
+  where   '-F' specifies a wavetable that immediately follows '-F'
+   and    '-d' runs the application as a daemon
+   and    '-o' specifies the output device [default is oss]
+   and    'ip:port specifies an optional ip address and/or port to listen on
+          the default port is 9000; specifying blank IP listens on all.
+          NOTE:  IPv6 addresses should be expressed as '[ip:ad:dr:es:s]:port'
+
+
