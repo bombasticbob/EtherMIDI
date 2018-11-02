@@ -42,7 +42,9 @@ There are no binaries available.  You will need to build it from source.
 On a Linux system, you'll need all developer libraries and headers associated
 with 'libfluidsynth'.  Typically, you can do something like this:
 
+<pre>
   apt-get install libfluidsynth-dev
+</pre>
 
 On a FreeBSD system, you should install the 'fluidsynth' package, which will
 install developer files in addition to the fluidsynth application.
@@ -57,7 +59,9 @@ RUNNING
 
 To run the application, enter a command line similar to the following:
 
+<pre>
   ethermidi -F wavetable.sf2
+</pre>
 
 where 'wavetable.sf2' is the (required) sound font file.
 
@@ -71,6 +75,7 @@ To choose a different output device, use the '-o' option.
 For general help, use the '-h' option.  It will print a display similar to
 the following:
 
+<pre>
   Usage:  ethermidi [-d][-Fwavetable.sf2][-o output] [[ip][:port]]
   where   '-F' specifies a wavetable that immediately follows '-F'
    and    '-d' runs the application as a daemon
@@ -78,5 +83,6 @@ the following:
    and    'ip:port specifies an optional ip address and/or port to listen on
           the default port is 9000; specifying blank IP listens on all.
           NOTE:  IPv6 addresses should be expressed as '[ip:ad:dr:es:s]:port'
+</pre>
 
 
