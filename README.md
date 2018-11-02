@@ -1,9 +1,14 @@
 # EtherMIDI
 Ethernet to MIDI bridge using libfluidsynth
 
-The EtherMIDI project is in an ALPHA state.  It is functional as-is, but
-I have only tested it on FreeBSD with an older version of libfluidsynth.
-(but the results were SO awesome I had to go ahead and post it now)
+The EtherMIDI project is in a BETA state.  It is functional as-is, but
+I have only 'minimally' tested it on FreeBSD and Linux.  However, I've had
+some really good success with it so far, so long as the CPU can handle the
+load of rendering the sound fonts and effects.
+
+I may add additional features that specify more parameter for libfluidsynth,
+as appropriate.  For now, it uses whatever the defaults are, with the synth
+gain set to 0.5 .
 
 
 This program uses libfluidsynth to generate MIDI output based on UDP packets
