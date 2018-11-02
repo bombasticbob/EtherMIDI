@@ -50,6 +50,9 @@
 //#define USE_CUSE                 /* use CUSE to create a device driver for fluidsynth to listen on in lieu of a FIFO */
 //#define USE_LIBFLUIDSYNTH_PARSER /* use the undocumented 'parser' for libfluidsynth */
 
+#define DEFAULT_FREEBSD_OUT_DEVICE "oss"
+#define DEFAULT_LINUX_OUT_DEVICE "pulseaudio"
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,6 +83,9 @@
 // need to include 'cuse4bsd' header - compile with -lcuse4bsd -lthr  and  -I /usr/local/include -L /usr/local/lib
 
 #ifdef USE_CUSE
+#ifndef __FreeBSD__
+#error this only works for FreeBSD
+#endif // __FreeBSD__
 #include <cuse4bsd.h> // in /usr/local/include
 #endif // USE_CUSE
 
@@ -151,9 +157,16 @@ WB_PROCESS_ID WBRunAsync(const char *szAppName, ...);
 
 void usage(void)
 {
-  fputs("Usage:  ethermidi [-d][-Fwavetable.sf2] [[ip][:port]]\n"
+  fputs("Usage:  ethermidi [-d][-Fwavetable.sf2][-o output] [[ip][:port]]\n"
         "where   '-F' specifies a wavetable that immediately follows '-F'\n"
-        " and    '-d' runs the application as a daemon [reserved]\n"
+        " and    '-d' runs the application as a daemon\n"
+        " and    '-o' specifies the output device [default is "
+#ifdef __FreeBSD__
+        DEFAULT_FREEBSD_OUT_DEVICE
+#else // linux
+        DEFAULT_LINUX_OUT_DEVICE
+#endif // __FreeBSD__ or linux
+        "]\n"
         " and    'ip:port specifies an optional ip address and/or port to listen on\n"
         "        the default port is 9000; specifying blank IP listens on all.\n"
         "        NOTE:  IPv6 addresses should be expressed as '[ip:ad:dr:es:s]:port'\n",
@@ -168,7 +181,7 @@ void usage(void)
 
 
 char szWaveTable[PATH_MAX * 2 + 2] = "";
-
+char szOutDev[PATH_MAX * 2 + 2] = "";
 
 int DoListenSocket(const char *szIPPort)
 {
@@ -371,7 +384,7 @@ int i1, iSocket = -1;
 int bDaemon = 0;  // boolean flags, actually
 
 
-  while((i1 = getopt(argc, argv, "hdF:" )) != -1)
+  while((i1 = getopt(argc, argv, "hdF:o:" )) != -1)
   {
     switch(i1)
     {
@@ -385,6 +398,10 @@ int bDaemon = 0;  // boolean flags, actually
 
       case 'F':
         strncpy(szWaveTable, optarg, sizeof(szWaveTable));
+        break;
+
+      case 'o':
+        strncpy(szOutDev, optarg, sizeof(szOutDev));
         break;
 
       default:
@@ -893,9 +910,26 @@ socklen_t nSA;
     goto error_exit;
   }
 
-  fluid_res = fluid_synth_sfload(synth, szSoundFont, 1); // TODO:  check result
+  if(*szSoundFont)
+  {
+    fluid_res = fluid_synth_sfload(synth, szSoundFont, 1); // TODO:  check result
+  }
+  else
+  {
+    fputs("WARNING:  no sound font file specified\n", stderr);
+  }
 
-  fluid_settings_setstr(settings, "audio.driver", "oss");
+  if(!szOutDev[0])  // use default output device
+  {
+#ifdef __FreeBSD__
+    strcpy(szOutDev, DEFAULT_FREEBSD_OUT_DEVICE);
+#else // linux
+    strcpy(szOutDev, DEFAULT_LINUX_OUT_DEVICE);
+#endif // __FreeBSD__ or linux
+  }
+
+  fluid_settings_setstr(settings, "audio.driver", szOutDev);
+
   adriver = new_fluid_audio_driver(settings, synth);
 
   if(!adriver)
@@ -928,9 +962,14 @@ socklen_t nSA;
   strcpy(tbuf, "midi.oss.device=");
   strcat(tbuf, szDevName);
 
-  pidFluidSynth = WBRunAsync("/usr/local/bin/fluidsynth", "--no-shell", "-a", "oss", "-g", "0.5",
+  pidFluidSynth = WBRunAsync("/usr/local/bin/fluidsynth", "--no-shell", "-a", DEFAULT_FREEBSD_OUT_DEVICE, "-g", "0.5",
                              "-v",
-                             "-m", "oss", "-o", tbuf, szSoundFont, NULL);
+#ifdef __FreeBSD__
+                             "-m", DEFAULT_FREEBSD_OUT_DEVICE,
+#else // assume Linux                             
+                             "-m", DEFAULT_LINUX_OUT_DEVICE,
+#endif // __FreeBSD__ vs Linux
+                             "-o", tbuf, szSoundFont, NULL);
 
   close(iTemp);
 #endif // USE_LIBFLUIDSYNTH
