@@ -1,11 +1,17 @@
-Portions of the 'EtherMIDI' distribution and supporting files are covered by
-the GNU General Public License, the text of which has been included within
-this document.  The C source file and the 'quotes' text file, README file,
-and 'init' scripts are covered under the BSD-STYLE LICENSE, below.  This is
-to ensure that the licenses associated with the 'autotools' and their
-macros are not in any way circumvented by this package.  The output of
-the autotools themselves is not covered by the GPL and may be distributed
-under the BSD-STYLE LICENSE.
+The 'EtherMIDI' source and documentation may be freely used and distributed
+under either the GPLv2, or a BSD-STYLE license, as appropriate.
+
+Portions of the 'EtherMIDI' distribution and supporting files may be covered
+by the GNU General Public License, the text of which has been included within
+this document.  The C source file, Makefile and README file, are also
+covered under the BSD-STYLE LICENSE, below.  This is to ensure that any
+licenses associated with any build tools (such as 'autotools') and their
+macros would not in any way be circumvented by this or any similar
+distribution.  The output of any of these utilities themselves should not
+be covered by the GPL, and may be distributed under the BSD-STYLE LICENSE.
+
+If a specific license is required for use or re-distribution, it will be
+so indicated within the appropriate files.
 
 
 
