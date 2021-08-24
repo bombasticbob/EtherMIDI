@@ -157,7 +157,7 @@ WB_PROCESS_ID WBRunAsync(const char *szAppName, ...);
 
 void usage(void)
 {
-  fputs("Usage:  ethermidi [-d][-Fwavetable.sf2][-o output] [[ip][:port]]\n"
+  fputs("Usage:  ethermidi [-d][-Fwavetable.sf2][-o output][-V vol] [[ip][:port]]\n"
         "where   '-F' specifies a wavetable that immediately follows '-F'\n"
         " and    '-d' runs the application as a daemon\n"
         " and    '-o' specifies the output device [default is "
@@ -167,6 +167,8 @@ void usage(void)
         DEFAULT_LINUX_OUT_DEVICE
 #endif // __FreeBSD__ or linux
         "]\n"
+        " and    '-V' specifies the output volume in percent [default is 75%]\n"
+        "        (this value will be divided by 100 and passed as '-g' to fluidsynth)\n"
         " and    'ip:port specifies an optional ip address and/or port to listen on\n"
         "        the default port is 9000; specifying blank IP listens on all.\n"
         "        NOTE:  IPv6 addresses should be expressed as '[ip:ad:dr:es:s]:port'\n",
@@ -182,6 +184,8 @@ void usage(void)
 
 char szWaveTable[PATH_MAX * 2 + 2] = "";
 char szOutDev[PATH_MAX * 2 + 2] = "";
+
+int iVolume = 75; // default volume = 75 (use -g with this value / 100.0)
 
 int DoListenSocket(const char *szIPPort)
 {
@@ -384,7 +388,7 @@ int i1, iSocket = -1;
 int bDaemon = 0;  // boolean flags, actually
 
 
-  while((i1 = getopt(argc, argv, "hdF:o:" )) != -1)
+  while((i1 = getopt(argc, argv, "vhdF:o:V:" )) != -1)
   {
     switch(i1)
     {
@@ -392,8 +396,18 @@ int bDaemon = 0;  // boolean flags, actually
         usage();
         return 0;
 
+      case 'v':
+        fputs("ethermidi version 1.0\n", stdout);
+        return 0;
+
       case 'd':
         bDaemon = 1;
+        break;
+
+      case 'V':
+        iVolume = atoi(optarg);
+        if(iVolume <= 0)
+          iVolume = 75; // default
         break;
 
       case 'F':
@@ -901,7 +915,9 @@ socklen_t nSA;
 
 #ifdef USE_LIBFLUIDSYNTH
 
-  fluid_settings_setnum(settings, "synth.gain", 0.5);
+  fluid_settings_setnum(settings, "synth.gain", (double)(iVolume / 100.0) /*0.5*/);
+  fprintf(stderr, "  synth.gain set to %0.2f\n", (double)(iVolume / 100.0));
+  fflush(stderr);
 
   synth = new_fluid_synth(settings);
   if(!synth)
@@ -917,6 +933,7 @@ socklen_t nSA;
   else
   {
     fputs("WARNING:  no sound font file specified\n", stderr);
+    fflush(stderr);
   }
 
   if(!szOutDev[0])  // use default output device
@@ -1166,6 +1183,8 @@ socklen_t nSA;
   // NOW, end 'FluidSynth' task
 
 error_exit:
+
+  fflush(stderr);
 
 #ifdef USE_LIBFLUIDSYNTH
 
